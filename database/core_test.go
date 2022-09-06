@@ -9,7 +9,7 @@ func TestCore_Open(t *testing.T) {
 	c := NewDatabase("mysql", "localhost", "3306", "root", "3541213", "test")
 	c.Open()
 	defer c.Close()
-	result := c.DBStruct("test")
+	result := c.DBStruct("test OR 1=1")
 	t.Log(result)
 
 	tables := make(map[string][]Field)
