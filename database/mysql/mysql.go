@@ -13,7 +13,7 @@ type Mysql struct {
 	common.Common
 }
 
-func New(host, port, user, password, dbName string) Mysql {
+func New(host, port, user, password, dbName string) *Mysql {
 	MysqlInstance := Mysql{
 		Common: common.Common{
 			Host:     host,
@@ -25,10 +25,11 @@ func New(host, port, user, password, dbName string) Mysql {
 	}
 
 	MysqlInstance.Instance = &MysqlInstance
-	return MysqlInstance
+	return &MysqlInstance
 }
 
-func (c Mysql) DSN() (driverName string, dataSource string) {
+// DSN data source name
+func (c *Mysql) DSN() (driverName string, dataSource string) {
 	driverName = DriverName
 	dataSource = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true",
 		c.User, c.Password, c.Host, c.Port, c.DBName)
@@ -90,22 +91,10 @@ func (c *Mysql) DBStruct() map[string]string {
 // 	FROM information_schema.columns
 // 	WHERE table_schema = ? AND table_name = ?`
 
-type Field struct {
-	Field      string      `json:"Field" db:"Field"`
-	Type       string      `json:"Type" db:"Type"`
-	Collation  *string     `json:"Collation" db:"Collation"`
-	Null       string      `json:"Null" db:"Null"`
-	Key        string      `json:"Key" db:"Key"`
-	Default    interface{} `json:"Default" db:"Default"`
-	Extra      string      `json:"Extra" db:"Extra"`
-	Privileges string      `json:"Privileges" db:"Privileges"`
-	Comment    string      `json:"Comment" db:"Comment"`
-}
-
-func (c *Mysql) TableStruct(tableName string) []Field {
+func (c *Mysql) TableStruct(tableName string) []common.Field {
 	sqlStr := `SHOW FULL COLUMNS FROM ` + tableName
 
-	var result []Field
+	var result []common.Field
 	err := c.DB.Select(&result, sqlStr)
 	if err != nil {
 		fmt.Println(err)

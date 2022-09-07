@@ -15,10 +15,10 @@ type Common struct {
 	Password string // 数据库密码
 	DBName   string // 数据库名
 
-	Instance InstacneInterface
+	Instance InstanceInterface
 }
 
-type InstacneInterface interface {
+type InstanceInterface interface {
 	DSN() (driverName string, dataSource string)
 }
 
@@ -32,11 +32,11 @@ func (c *Common) Open() error {
 	return nil
 }
 
-func (c Common) Close() error {
+func (c *Common) Close() error {
 	return c.DB.Close()
 }
 
-func (c Common) Find(tableName string, page, pageSize int64, soryBy string, where ...string) error {
+func (c *Common) Find(tableName string, page, pageSize int64, soryBy string, where ...string) error {
 	rows, err := c.DB.Query("select * from ?", tableName)
 	if err != nil {
 		fmt.Println(err)
