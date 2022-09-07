@@ -1,18 +1,35 @@
 package common
 
 import (
-	"database/sql"
 	"fmt"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type Common struct {
-	DB *sql.DB // db实例
+	DB *sqlx.DB // db实例
 
 	Host     string // 数据库地址
 	Port     string // 数据库端口
 	User     string // 数据库用户名
 	Password string // 数据库密码
 	DBName   string // 数据库名
+
+	Instance InstacneInterface
+}
+
+type InstacneInterface interface {
+	DSN() (driverName string, dataSource string)
+}
+
+func (c *Common) Open() error {
+	driverName, dataSource := c.Instance.DSN()
+	db, err := sqlx.Connect(driverName, dataSource)
+	if err != nil {
+		return err
+	}
+	c.DB = db
+	return nil
 }
 
 func (c Common) Close() error {

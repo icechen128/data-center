@@ -1,8 +1,8 @@
-package database
+package common
 
 type Database interface {
-	DBStruct(dbName string)
-	TableStruct(dbName, tableName string)
+	DBStruct()
+	TableStruct(tableName string)
 
 	Find(tableName string, page, pageSize int64, soryBy string, where ...string)
 	First(tableName string, where ...string)

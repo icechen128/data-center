@@ -7,7 +7,11 @@ import (
 )
 
 func main() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			return c.JSON(err)
+		},
+	})
 
 	apiRoute := app.Group("/api")
 	apiV1 := apiRoute.Group("/v1")
