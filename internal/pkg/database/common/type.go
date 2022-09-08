@@ -1,14 +1,26 @@
 package common
 
 type Database interface {
-	DBStruct() map[string]string
-	TableStruct(tableName string) []Field
+	DBStruct() ([]Table, error)
+	TableStruct(tableName string) ([]Field, error)
 
 	//Find(tableName string, page, pageSize int64, soryBy string, where ...string)
 	//First(tableName string, where ...string)
 	//Update(tableName string)
 	//Insert(tableName string, obj interface{})
 	//Delete(tableName string, obj interface{})
+}
+
+type TTableType string
+
+const (
+	TableTypeBaseTable TTableType = "BASE TABLE"
+	TableTypeView      TTableType = "VIEW"
+)
+
+type Table struct {
+	TableName string     `json:"table_name" db:"Table_name"`
+	TableType TTableType `json:"table_type" db:"Table_type"`
 }
 
 type Field struct {

@@ -3,6 +3,7 @@ package mysql
 import (
 	"fmt"
 	"github.com/icechen128/data-center/internal/pkg/database/common"
+	"github.com/spf13/cast"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -36,31 +37,36 @@ func (c *Mysql) DSN() (driverName string, dataSource string) {
 	return
 }
 
-func (c *Mysql) DBStruct() map[string]string {
+func (c *Mysql) DBStruct() ([]common.Table, error) {
 	// 	sqlStr := `SELECT TABLE_NAME tableName ,TABLE_COMMENT tableDesc
 	// From INFORMATION_SCHEMA.TABLES
 	// WHERE UPPER(table_type)='BASE TABLE'
 	// AND LOWER(table_schema) = ?
 	// ORDER BY table_name`
-	sqlStr := `SHOW FULL TABLES`
-	var result = make(map[string]string)
 	// rows, err := c.DB.Query(sqlStr, c.DBName)
-	rows, err := c.DB.Query(sqlStr)
+
+	sqlStr := `SHOW FULL TABLES`
+	var result []common.Table
+	rows, err := c.DB.Queryx(sqlStr)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		return result, err
 	}
 
 	for rows.Next() {
-		var tableName, tableDesc string
-		err = rows.Scan(&tableName, &tableDesc)
+		row, err := rows.SliceScan()
 		if err != nil {
 			fmt.Println(err)
-			panic(err)
+			return result, err
 		}
-		result[tableName] = tableDesc
+
+		result = append(result, common.Table{
+			TableName: cast.ToString(row[0]),
+			TableType: common.TTableType(cast.ToString(row[1])),
+		})
 	}
-	return result
+
+	return result, nil
 }
 
 // type Field struct {
@@ -91,15 +97,15 @@ func (c *Mysql) DBStruct() map[string]string {
 // 	FROM information_schema.columns
 // 	WHERE table_schema = ? AND table_name = ?`
 
-func (c *Mysql) TableStruct(tableName string) []common.Field {
+func (c *Mysql) TableStruct(tableName string) ([]common.Field, error) {
 	sqlStr := `SHOW FULL COLUMNS FROM ` + tableName
 
 	var result []common.Field
 	err := c.DB.Select(&result, sqlStr)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		return result, err
 	}
 
-	return result
+	return result, nil
 }

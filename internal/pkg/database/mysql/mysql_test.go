@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"github.com/icechen128/data-center/internal/pkg/database/common"
 	"reflect"
 	"testing"
 
@@ -13,12 +14,20 @@ func TestMysql_DBStruct(t *testing.T) {
 	tests := []struct {
 		name string
 		db   *Mysql
-		want map[string]string
+		want []common.Table
 	}{
 		{
 			name: "test get tables",
 			db:   defaultMysqlDB,
-			want: map[string]string{"users": "BASE TABLE"},
+			want: []common.Table{
+				{
+					TableName: "users",
+					TableType: common.TableTypeBaseTable},
+				{
+					TableName: "usersView",
+					TableType: common.TableTypeView,
+				},
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -28,7 +37,7 @@ func TestMysql_DBStruct(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			if got := c.DBStruct(); !reflect.DeepEqual(got, tt.want) {
+			if got, _ := c.DBStruct(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mysql.DBStruct() = %v, want %v", got, tt.want)
 			}
 		})
@@ -55,7 +64,7 @@ func TestMysql_TableStruct(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			if got := c.TableStruct(tt.args.tableName); !reflect.DeepEqual(got, tt.want) {
+			if got, _ := c.TableStruct(tt.args.tableName); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mysql.TableStruct() = %v, want %v", got, tt.want)
 			}
 		})
