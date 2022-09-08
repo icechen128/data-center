@@ -23,8 +23,7 @@ func HandleList(c *fiber.Ctx) error {
 	}
 	fmt.Println(strings.Join([]string{workspace, db, table}, ", "))
 
-	c.JSON(fiber.Map{"code": 0})
-	return nil
+	return c.JSON(fiber.Map{"code": 0})
 }
 
 func MustParams(c *fiber.Ctx, name string) (value string, err error) {

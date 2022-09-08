@@ -1,8 +1,8 @@
 package database
 
 import (
-	"data-center/database/common"
-	"data-center/database/mysql"
+	"github.com/icechen128/data-center/internal/pkg/database/common"
+	"github.com/icechen128/data-center/internal/pkg/database/mysql"
 	"sync"
 )
 

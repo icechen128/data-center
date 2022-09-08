@@ -12,7 +12,7 @@ var defaultMysqlDB = New("127.0.0.1", "3306", "root", "3541213", "test")
 func TestMysql_DBStruct(t *testing.T) {
 	tests := []struct {
 		name string
-		db   Mysql
+		db   *Mysql
 		want map[string]string
 	}{
 		{
@@ -23,7 +23,7 @@ func TestMysql_DBStruct(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &tt.db
+			c := tt.db
 			err := c.Open()
 			if err != nil {
 				t.Error(err)
@@ -38,7 +38,7 @@ func TestMysql_DBStruct(t *testing.T) {
 func TestMysql_TableStruct(t *testing.T) {
 	tests := []struct {
 		name string
-		db   Mysql
+		db   *Mysql
 		args struct{ tableName string }
 		want map[string]string
 	}{
@@ -50,7 +50,7 @@ func TestMysql_TableStruct(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &tt.db
+			c := tt.db
 			err := c.Open()
 			if err != nil {
 				t.Error(err)

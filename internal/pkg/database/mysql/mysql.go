@@ -1,8 +1,8 @@
 package mysql
 
 import (
-	"data-center/database/common"
 	"fmt"
+	"github.com/icechen128/data-center/internal/pkg/database/common"
 
 	_ "github.com/go-sql-driver/mysql"
 )

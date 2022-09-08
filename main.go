@@ -1,7 +1,7 @@
 package main
 
 import (
-	"data-center/api"
+	"github.com/icechen128/data-center/api"
 
 	"github.com/gofiber/fiber/v2"
 )

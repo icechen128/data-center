@@ -1,4 +1,4 @@
-module data-center
+module github.com/icechen128/data-center
 
 go 1.19
 
