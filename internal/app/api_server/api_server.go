@@ -2,6 +2,7 @@ package api_server
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func RunServer() error {
@@ -10,6 +11,7 @@ func RunServer() error {
 			return c.JSON(err)
 		},
 	})
+	app.Use(logger.New())
 
 	apiRoute := app.Group("/api")
 	apiV1 := apiRoute.Group("/v1")
